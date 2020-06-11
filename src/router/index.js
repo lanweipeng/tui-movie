@@ -4,7 +4,9 @@ import App from '../App'
 import Index from '../views/Index.vue'
 import login from '../views/login/login'
 import bindMobile from '../views/login/bindMobile'
-
+// const Movie = import(/* webpackChunkName: "Reg" */'@/views/movie/Index')
+// import Movie from '../views/movie/Index.vue'
+const Movie =()=>import('@/views/movie/Index.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -13,6 +15,7 @@ const routes = [
     children:[ //二级路由。对应App.vue
       {path: '',  redirect: '/index'},
       {path: '/index',  component: Index, meta: { title:"在线实习" } },
+      {path:'/movie',component:Movie,meta:{title:"电影列表"}},
       {path: '/u/login',  component: login, meta: { title:"登录" } },
       {path: '/u/bindMobile',  component: bindMobile, meta: { title:"绑定手机" } },
     ]

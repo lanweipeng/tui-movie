@@ -4,6 +4,9 @@
         <div>
             <router-link to='/'>返回首页</router-link>
         </div>
+         <div>
+            <router-link to='/movie'>电影列表</router-link>
+        </div>
         <div>
             <router-link to='/u/login'>登录</router-link>
         </div>
