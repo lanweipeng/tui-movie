@@ -32,10 +32,11 @@
         line-height: 48px;
         text-align: center;
         background: #ffffff;
+        border-bottom: 1px solid #8b8b8b;
         .nav-left{
             position: absolute;
             bottom: 0;
-            font-size: 14px;
+            font-size: 30px;
             cursor: pointer;
             left:16px;
         }

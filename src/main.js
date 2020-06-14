@@ -7,15 +7,16 @@ import store from './store'
 import axios from 'axios'
 import qs from 'qs';
 Vue.prototype.$http=axios
-axios.defaults.baseURL = '/api'
+axios.defaults.baseURL = 'http://rap2.taobao.org:38080/app/mock/257821'
 axios.defaults.timeout = 5000;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 //axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 Vue.prototype.$qs = qs;
 
 import "lib-flexible/flexible"
-import { Toast } from 'vant'
+import { Toast,PullRefresh } from 'vant'
 Vue.use(Toast)
+Vue.use(PullRefresh)
 
 Vue.config.productionTip = false
 
