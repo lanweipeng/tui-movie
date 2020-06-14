@@ -14,9 +14,9 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 Vue.prototype.$qs = qs;
 
 import "lib-flexible/flexible"
-import { Toast,PullRefresh } from 'vant'
+import { Toast,List } from 'vant'
 Vue.use(Toast)
-Vue.use(PullRefresh)
+Vue.use(List)
 
 Vue.config.productionTip = false
 

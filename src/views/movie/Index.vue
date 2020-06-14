@@ -1,7 +1,5 @@
 <template>
   <div id='movie_list'>
-    <van-pull-refresh @refresh="onRefresh">
-
     <head-top
       head-title="电影列表"
       go-back="true"
@@ -55,7 +53,7 @@
         ></choice>
        
       </div>
-       <div class="movie-list">
+       <!-- <div class="movie-list">
         <movie :list="movieList"></movie>
         <loading
           class="loading"
@@ -64,11 +62,27 @@
         <div class="load-more" v-else>上拉加载更多{{count}}</div>
         <empty v-if="movieList.length===0&&loading===false"></empty>
 
-      </div>
+      </div> -->
+       <loading
+       style="display:none"
+          class="loading"
+          v-if="loading===true"
+        ></loading>
+
+      <van-list
+      v-if="finished===false&&movieList.length>0"
+  v-model="loading"
+  :finished="finished"
+  finished-text="没有更多了"
+  @load="loadMore"
+>
+  <movie :list="movieList"></movie>
+</van-list>
+        <empty v-if="movieList.length===0&&loading===false"></empty>
+
       </div>
     
     </div>
-    </van-pull-refresh>
   </div>
 </template>
 <script>
@@ -78,9 +92,12 @@ import Movie from "@/components/Movie";
 import Loading from "@/components/Loading";
 import ToTop from "@/components/ToTop";
 import Empty from '@/components/Empty'
+import moment from 'moment'
 export default {
   data() {
     return {
+      loading: false,
+      finished: false,
       count: 0,
       regionId: 0,
       type: 0,
@@ -105,6 +122,11 @@ export default {
     this.getData();
   },
   methods: {
+
+    loadMore(){
+      this.page+=1;
+      this.getData()
+    },
     getData() {
       this.loading = true;
       this.$http
@@ -122,14 +144,19 @@ export default {
           this.loading = false;
 
           let { data: movieList } = res.data;
+          if(movieList.length==0){
+            this.finished=true
+          }
           movieList = movieList.map(item => {
             item.actorNames = item.actorNames.split(" ").join("/");
             item.regions = item.regions.split(" ").join("/");
-            item.showDateYear = new Date(item.showDate).getFullYear();
+            item.showDateYear = moment(item.showDate).year();
             item.typeName = this.getTypeNameById(item.type);
             return item;
           });
-          this.movieList = movieList;
+          this.movieList = [...this.movieList,...movieList];
+          console.log('this.movieList')
+          console.log(this.movieList)
         });
     },
     onRefresh(){
@@ -185,7 +212,7 @@ right: 20px;
 bottom: 100px;
   }
   .chioces {
-  margin: 5px 0;
+  margin: 10px 0 20px;
 }
 .movie-list {
   background-color: #fff;
