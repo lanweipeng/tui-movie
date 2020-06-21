@@ -5,55 +5,55 @@
       go-back="true"
     ></head-top>
     <div>
-      <div class="content" >
+      <div class="content">
         <a href="#movie_list">
-        <to-top class="to-top"></to-top>
+          <to-top class="to-top"></to-top>
 
         </a>
-        
-  <div class="chioces">
-        <choice
-          :list="[{id:1,name:'推时间'},{id:2,name:'推评分'},{id:3,name:'喜欢数'},
+
+        <div class="chioces">
+          <choice
+            :list="[{id:1,name:'推时间'},{id:2,name:'推评分'},{id:3,name:'喜欢数'},
  {id:4,name:'新上线'}]"
-          @getId="getSortType"
-          :id="sortType"
-        ></choice>
-        <choice
-          :list="[{id:0,name:'全部地区'},
+            @getId="getSortType"
+            :id="sortType"
+          ></choice>
+          <choice
+            :list="[{id:0,name:'全部地区'},
       {id:1,name:'华语'},
       {id:91,name:'港台'},
       {id:92,name:'日韩'},
       {id:93,name:'东南亚'},
       {id:8,name:'美国'},
       {id:9,name:'其他'}]"
-          @getId="getRegionId"
-          :id="regionId"
-        ></choice>
-        <choice
-          :list="typeArr"
-          @getId="getType"
-          :id="type"
-        ></choice>
-        <choice
-          :list="[
+            @getId="getRegionId"
+            :id="regionId"
+          ></choice>
+          <choice
+            :list="typeArr"
+            @getId="getType"
+            :id="type"
+          ></choice>
+          <choice
+            :list="[
       {id:0,name:'全部年份'},
       {id:1,name:'2010-2020'},
       {id:2,name:'2010-2010'},
       {id:3,name:'1990-2000'}]"
-          @getId="getMovieDate"
-          :id="movieDate"
-        ></choice>
-        <choice
-          :list="[
+            @getId="getMovieDate"
+            :id="movieDate"
+          ></choice>
+          <choice
+            :list="[
       {id:0,name:'全部方式'},
       {id:1,name:'可跳转'},
       {id:2,name:'下载链接'},{id:3,name:'仅推荐'}]"
-          @getId="getWatchType"
-          :id="watchType"
-        ></choice>
-       
-      </div>
-       <!-- <div class="movie-list">
+            @getId="getWatchType"
+            :id="watchType"
+          ></choice>
+
+        </div>
+        <!-- <div class="movie-list">
         <movie :list="movieList"></movie>
         <loading
           class="loading"
@@ -63,24 +63,23 @@
         <empty v-if="movieList.length===0&&loading===false"></empty>
 
       </div> -->
-       <loading
-       style="display:none"
+        <loading
           class="loading"
           v-if="loading===true"
         ></loading>
-      <van-list
-    
-  v-model="loading"
-  :finished="finished"
-  finished-text="没有更多了"
-  @load="loadMore"
->
-  <movie :list="movieList"></movie>
-</van-list>
+        <van-list
+        v-if="movieList.length!==0||loading===true"
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="loadMore"
+        >
+          <movie :list="movieList"></movie>
+        </van-list>
         <empty v-if="movieList.length===0&&loading===false"></empty>
 
       </div>
-    
+
     </div>
   </div>
 </template>
@@ -90,9 +89,9 @@ import Choice from "@/components/Choice";
 import Movie from "@/components/Movie";
 import Loading from "@/components/Loading";
 import ToTop from "@/components/ToTop";
-import Empty from '@/components/Empty'
-import moment from 'moment'
-import {GetAxios} from '@/api/index'
+import Empty from "@/components/Empty";
+import moment from "moment";
+import { GetAxios } from "@/api/index";
 export default {
   data() {
     return {
@@ -122,12 +121,9 @@ export default {
     this.getData();
   },
   methods: {
-
-    loadMore(){
-      
-this.page+=1;
-      this.getData()
-      
+    loadMore() {
+      this.page += 1;
+      this.getData();
     },
     getData() {
       this.loading = true;
@@ -135,33 +131,32 @@ this.page+=1;
       // GetAxios("/movie/list/ajax/load")
       // this.$http.get
       GetAxios("/movie/list/ajax/load", {
-            regionId: this.regionId,
-            type: this.type,
-            movieDate: this.movieDate,
-            sortType: this.sortType,
-            watchType: this.watchType,
-            page: this.page
-        })
-        .then(res => {
-          this.loading = false;
+        regionId: this.regionId,
+        type: this.type,
+        movieDate: this.movieDate,
+        sortType: this.sortType,
+        watchType: this.watchType,
+        page: this.page
+      }).then(res => {
+        this.loading = false;
 
-          let { data: movieList } = res.data;
-         
-          if(movieList===null){
-            this.finished=true;
-            // this.loading=false;
-          }
-          
-          movieList = movieList.map(item => {
-            item.actorNames = item.actorNames.split(" ").join("/");
-            item.regions = item.regions.split(" ").join("/");
-            item.showDateYear = moment(item.showDate).year();
-            item.typeName = this.getTypeNameById(item.type);
-            return item;
-          });
-     
-          this.movieList = [...this.movieList,...movieList];
+        let { data: movieList } = res.data;
+
+        if (movieList === null) {
+          this.finished = true;
+          // this.loading=false;
+        }
+
+        movieList = movieList.map(item => {
+          item.actorNames = item.actorNames.split(" ").join("/");
+          item.regions = item.regions.split(" ").join("/");
+          item.showDateYear = moment(item.showDate).year();
+          item.typeName = this.getTypeNameById(item.type);
+          return item;
         });
+
+        this.movieList = [...this.movieList, ...movieList];
+      });
     },
     getTypeNameById(id) {
       for (let i = 0; i < this.typeArr.length; i++) {
@@ -173,30 +168,28 @@ this.page+=1;
     },
     getRegionId(id) {
       this.regionId = id;
-           this.reGetData()
-
+      this.reGetData();
     },
     getType(id) {
       this.type = id;
-      
+      this.getData();
+
     },
-    reGetData(){
-this.movieList=[]
+    reGetData() {
+      this.movieList = [];
       this.getData();
     },
     getMovieDate(id) {
       this.movieDate = id;
-      this.reGetData()
+      this.reGetData();
     },
     getWatchType(id) {
       this.watchType = id;
-            this.reGetData()
-
+      this.reGetData();
     },
     getSortType(id) {
       this.sortType = id;
-            this.reGetData()
-
+      this.reGetData();
     }
   },
   components: {
@@ -210,26 +203,26 @@ this.movieList=[]
 };
 </script>
 <style lang='scss' scoped>
-.content{
+.content {
   position: relative;
-  .to-top{
+  .to-top {
     z-index: 1;
-position: fixed;
-right: 20px;
-bottom: 100px;
+    position: fixed;
+    right: 20px;
+    bottom: 100px;
   }
   .chioces {
-  margin: 10px 0 20px;
-}
-.movie-list {
-  background-color: #fff;
-  position: relative;
-  .loading {
-    position: absolute;
+    margin: 10px 0 20px;
   }
-  .load-more{
-    text-align: center;
+  .movie-list {
+    background-color: #fff;
+    position: relative;
+    .loading {
+      position: absolute;
+    }
+    .load-more {
+      text-align: center;
+    }
   }
-}
 }
 </style>
