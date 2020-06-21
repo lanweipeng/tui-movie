@@ -69,7 +69,7 @@
         ></loading>
         <van-list
         v-if="movieList.length!==0||loading===true"
-          v-model="loading"
+         
           :finished="finished"
           finished-text="没有更多了"
           @load="loadMore"
@@ -127,7 +127,7 @@ export default {
     },
     getData() {
       this.loading = true;
-
+this.finished=false
       // GetAxios("/movie/list/ajax/load")
       // this.$http.get
       GetAxios("/movie/list/ajax/load", {
@@ -143,7 +143,17 @@ export default {
         let { data: movieList } = res.data;
 
         if (movieList === null) {
+          new Promise((resolve)=>{
+setInterval(() => {
+            if(this.loading===false){
+              resolve()
+            }
+          }, 100);
+          }).then(()=>{
           this.finished = true;
+
+        })
+          
           // this.loading=false;
         }
 
