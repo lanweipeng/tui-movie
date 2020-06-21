@@ -68,9 +68,8 @@
           class="loading"
           v-if="loading===true"
         ></loading>
-
       <van-list
-      v-if="finished===false&&movieList.length>0"
+    
   v-model="loading"
   :finished="finished"
   finished-text="没有更多了"
@@ -93,6 +92,7 @@ import Loading from "@/components/Loading";
 import ToTop from "@/components/ToTop";
 import Empty from '@/components/Empty'
 import moment from 'moment'
+import {GetAxios} from '@/api/index'
 export default {
   data() {
     return {
@@ -124,29 +124,34 @@ export default {
   methods: {
 
     loadMore(){
-      this.page+=1;
+      
+this.page+=1;
       this.getData()
+      
     },
     getData() {
       this.loading = true;
-      this.$http
-        .get("/movie/list/ajax/load", {
-          params: {
+
+      // GetAxios("/movie/list/ajax/load")
+      // this.$http.get
+      GetAxios("/movie/list/ajax/load", {
             regionId: this.regionId,
             type: this.type,
             movieDate: this.movieDate,
             sortType: this.sortType,
             watchType: this.watchType,
             page: this.page
-          }
         })
         .then(res => {
           this.loading = false;
 
           let { data: movieList } = res.data;
-          if(movieList.length==0){
-            this.finished=true
+         
+          if(movieList===null){
+            this.finished=true;
+            // this.loading=false;
           }
+          
           movieList = movieList.map(item => {
             item.actorNames = item.actorNames.split(" ").join("/");
             item.regions = item.regions.split(" ").join("/");
@@ -154,14 +159,9 @@ export default {
             item.typeName = this.getTypeNameById(item.type);
             return item;
           });
+     
           this.movieList = [...this.movieList,...movieList];
-          console.log('this.movieList')
-          console.log(this.movieList)
         });
-    },
-    onRefresh(){
-      this.count++;
-      console.log('hh')
     },
     getTypeNameById(id) {
       for (let i = 0; i < this.typeArr.length; i++) {
@@ -173,23 +173,30 @@ export default {
     },
     getRegionId(id) {
       this.regionId = id;
-      this.getData();
+           this.reGetData()
+
     },
     getType(id) {
       this.type = id;
+      
+    },
+    reGetData(){
+this.movieList=[]
       this.getData();
     },
     getMovieDate(id) {
       this.movieDate = id;
-      this.getData();
+      this.reGetData()
     },
     getWatchType(id) {
       this.watchType = id;
-      this.getData();
+            this.reGetData()
+
     },
     getSortType(id) {
       this.sortType = id;
-      this.getData();
+            this.reGetData()
+
     }
   },
   components: {

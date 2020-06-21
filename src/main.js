@@ -3,13 +3,10 @@ import './plugins/axios'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-
-import axios from 'axios'
 import qs from 'qs';
+import {axios} from '@/api/index'
 Vue.prototype.$http=axios
-axios.defaults.baseURL = 'http://rap2.taobao.org:38080/app/mock/257821'
-axios.defaults.timeout = 5000;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 //axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 Vue.prototype.$qs = qs;
 
